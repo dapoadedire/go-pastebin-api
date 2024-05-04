@@ -140,7 +140,6 @@ func deletePaste(c *gin.Context) {
 var db *sql.DB
 
 func initDB() {
-	// connStr := "user=your_user dbname=your_db sslmode=disable password=your_password host=localhost port=5432"
 	connStr := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable", DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASSWORD)
 	var err error
 	db, err = sql.Open("postgres", connStr)
@@ -150,4 +149,10 @@ func initDB() {
 	if err = db.Ping(); err != nil {
 		panic(err)
 	}
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS pastes (id TEXT PRIMARY KEY, content TEXT, created_at TIMESTAMP)")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Successfully connected to the database!")
 }
